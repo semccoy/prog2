@@ -1,4 +1,3 @@
-
 package prog2;
 
 import java.awt.Color;
@@ -11,135 +10,76 @@ class PlotPanel extends JPanel {
 
     static int width = 640;
     static int height = 640;
+    static int frameWidth = width + 10;
+    static int frameHeight = height + 35;
 
-    static int N = 40;
-    double points[]; // 0,1
-    static double GapSize = ((float) width) / ((float) N);
+    static int numPoints = 40;
+    Point points[]; // 0,1
     Random r;
 
     public PlotPanel() {
-        this.points = new double[N];
+        this.points = new Point[numPoints];
         this.r = new Random();
-        for (int i = 0; i < N; i++) {
-            this.points[i] = r.nextDouble();
-            // System.out.println("p[" + i + "] = " + this.points[i]);
+        for (int i = 0; i < numPoints; i++) {
+            this.points[i] = new Point(r.nextDouble() * width, r.nextDouble() * height);
+//            System.out.println("Point " + i + " = (" + this.points[i].x + ", " + this.points[i].y + ")");
         }
-
-        for (int i = 0; i < N; i++) {
-            double x = (float) i * GapSize;
-            // System.out.println("f(" + x + ") = " + f(x));
-        }
-    }
-
-    public double f(double x) {
-        int b = before(x);
-        int a = after(x);
-        double p = between(b, a, x);
-        // System.out.println("\tb = " + b + " a = " + a + " p = " + p);
-        return lerp(this.points[b],
-                this.points[a],
-                p);
-    }
-
-    double bucket(double x) {
-        return x / GapSize;
-    }
-
-    double clamp(double x) {
-        return Math.max(0, Math.min(N - 1, x));
-    }
-
-    int before(double x) {
-        return (int) clamp(Math.floor(bucket(x)));
-    }
-
-    int after(double x) {
-        return (int) clamp(Math.ceil(bucket(x)));
-    }
-
-    double between(int left, int right, double v) {
-        // System.out.println("v = " + v + " left = " + left);
-        return ((double) (v - left * GapSize)) / GapSize;
-    }
-
-    double lerp(double from, double to, double p) {
-        return (1.0 - p) * from + p * to;
     }
 
     public Dimension getPreferredSize() {
         return new Dimension(width, height);
     }
 
-    double s = ((double) width) / 2.0;
-    double os = 0.0;
-    int Kmax = 1000;
-    int K = Kmax;
-    double warp_width = 0.0;
-    double bestEver = 0.0;
+    public double distance(Point p1, Point p2) {
+        return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+    }
 
-    void go() {
+    double travelDist = 0.0;
+    int counter = 0;
+
+    void goRandom() {
         this.revalidate();
         this.repaint();
-        // Run simulated annealing
-        if (this.K > 0) {
-            double time = (float) K / (float) Kmax;
-            double cur_s = this.s;
-            warp_width = ((double) width) * 0.5 * time;
-            double prop_s = -1.0;
-            while (prop_s < 0.0 || prop_s >= width) {
-                prop_s = cur_s + (this.r.nextDouble() - 0.5) * warp_width;
-//                System.out.println("prop_s = " + prop_s);
-            }
-            double cur_v = f(cur_s);
-            double prop_v = f(prop_s);
-            boolean change_p = (cur_v < prop_v) || this.r.nextDouble() < time * 0.25;
-            /* System.out.println("f(" + cur_s + ") = " + cur_v + " ? " +
-             "f(" + prop_s + ") = " + prop_v + " == " +
-             better_p);
-             */
-            
-            if (cur_v > bestEver) {
-                bestEver = cur_v;
-                System.out.println("Best point ever: "  + " " + cur_v);
-            }
-            
-            double new_s = change_p ? prop_s : cur_s;
-            this.os = prop_s;
-            this.s = new_s;
-            this.K = this.K - 1;
-            
-        }
+        // Run algorithm
+
+//        System.out.println("Distance travelled: " + travelDist);
+//        travelDist += distance(points[counter], points[counter + 1]);
+//        counter++;
     }
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        int sx = (int) Math.round(s);
 
-        g.setColor(Color.PINK);
-        g.fillRect((int) Math.round(sx - warp_width), 0, (int) Math.round(2.0 * warp_width), height);
+        int ovalSize = 10;
+        int startx = (int) points[0].x;
+        int starty = (int) points[0].x;
 
-        int lx = 0;
-        int ly = 0;
-        for (int i = 0; i < N; i++) {
-            int x = (int) Math.round(((float) i) * GapSize);
-            int y = height - (int) Math.round(this.points[i] * ((double) height));
+        g.setColor(Color.RED);
+        g.drawOval(startx - ovalSize / 2, starty - ovalSize / 2, ovalSize, ovalSize);
+        for (int i = 0; i < numPoints; i++) {
+            int x = (int) points[i].x;
+            int y = height - (int) points[i].y;
             g.setColor(Color.RED);
-            g.drawOval(x, y, 6, 6);
+            g.drawOval(x, y, ovalSize, ovalSize);
             g.setColor(Color.BLACK);
-            int ax = x + 3;
-            int ay = y + 3;
-            g.drawLine(lx, ly, ax, ay);
-            lx = ax;
-            ly = ay;
+            int newx = x + ovalSize / 2;
+            int newy = y + ovalSize / 2;
+            g.drawLine(startx, starty, newx, newy);
+            startx = newx;
+            starty = newy;
         }
-
-        g.setColor(Color.BLUE);
-        g.drawLine(sx, 0, sx, height);
-
-        int osx = (int) Math.round(os);
-        g.setColor(Color.GREEN);
-        g.drawLine(osx, 0, osx, height);
-
     }
-}
 
+//        int sx = (int) Math.round(s);
+//
+//        g.setColor(Color.PINK);
+//        g.fillRect((int) Math.round(sx - warp_width), 0, (int) Math.round(2.0 * warp_width), height);
+//
+//        g.setColor(Color.BLUE);
+//        g.drawLine(sx, 0, sx, height);
+//
+//        int osx = (int) Math.round(os);
+//        g.setColor(Color.GREEN);
+//        g.drawLine(osx, 0, osx, height);
+    //        
+}

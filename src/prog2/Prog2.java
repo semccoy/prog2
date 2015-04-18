@@ -17,9 +17,9 @@ public class Prog2 {
     }
 
     public static void createAndShowGUI() {
-        JFrame f = new JFrame("Traveling Salesman");
+        JFrame f = new JFrame("Traveling Salesman Problem");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(PlotPanel.width, PlotPanel.height);
+        f.setSize(PlotPanel.frameWidth, PlotPanel.frameHeight);
         final PlotPanel pp = new PlotPanel();
         f.add(pp);
         f.setVisible(true);
@@ -27,7 +27,13 @@ public class Prog2 {
         int delay = 100; //milliseconds
         ActionListener taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                pp.go();
+                
+                pp.goRandom();
+                
+                
+                
+                
+                
             }
         };
         new Timer(delay, taskPerformer).start();
