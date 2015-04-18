@@ -1,53 +1,20 @@
+
 package prog2;
 
-import javax.swing.SwingUtilities;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.Timer;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Random;
-
-public class C19 {
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
-
-    private static void createAndShowGUI() {
-        JFrame f = new JFrame("Plot");
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(PlotPanel.W, PlotPanel.H);
-        final PlotPanel pp = new PlotPanel();
-        f.add(pp);
-        f.setVisible(true);
-
-        int delay = 10; //milliseconds
-        ActionListener taskPerformer = new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                pp.go();
-            }
-        };
-        new Timer(delay, taskPerformer).start();
-
-    }
-}
+import javax.swing.JPanel;
 
 class PlotPanel extends JPanel {
 
-    static int W = 640;
-    static int H = 640;
+    static int width = 640;
+    static int height = 640;
 
     static int N = 40;
     double points[]; // 0,1
-    static double GapSize = ((float) W) / ((float) N);
+    static double GapSize = ((float) width) / ((float) N);
     Random r;
 
     public PlotPanel() {
@@ -100,10 +67,10 @@ class PlotPanel extends JPanel {
     }
 
     public Dimension getPreferredSize() {
-        return new Dimension(W, H);
+        return new Dimension(width, height);
     }
 
-    double s = ((double) W) / 2.0;
+    double s = ((double) width) / 2.0;
     double os = 0.0;
     int Kmax = 1000;
     int K = Kmax;
@@ -117,9 +84,9 @@ class PlotPanel extends JPanel {
         if (this.K > 0) {
             double time = (float) K / (float) Kmax;
             double cur_s = this.s;
-            warp_width = ((double) W) * 0.5 * time;
+            warp_width = ((double) width) * 0.5 * time;
             double prop_s = -1.0;
-            while (prop_s < 0.0 || prop_s >= W) {
+            while (prop_s < 0.0 || prop_s >= width) {
                 prop_s = cur_s + (this.r.nextDouble() - 0.5) * warp_width;
 //                System.out.println("prop_s = " + prop_s);
             }
@@ -149,13 +116,13 @@ class PlotPanel extends JPanel {
         int sx = (int) Math.round(s);
 
         g.setColor(Color.PINK);
-        g.fillRect((int) Math.round(sx - warp_width), 0, (int) Math.round(2.0 * warp_width), H);
+        g.fillRect((int) Math.round(sx - warp_width), 0, (int) Math.round(2.0 * warp_width), height);
 
         int lx = 0;
         int ly = 0;
         for (int i = 0; i < N; i++) {
             int x = (int) Math.round(((float) i) * GapSize);
-            int y = H - (int) Math.round(this.points[i] * ((double) H));
+            int y = height - (int) Math.round(this.points[i] * ((double) height));
             g.setColor(Color.RED);
             g.drawOval(x, y, 6, 6);
             g.setColor(Color.BLACK);
@@ -167,11 +134,12 @@ class PlotPanel extends JPanel {
         }
 
         g.setColor(Color.BLUE);
-        g.drawLine(sx, 0, sx, H);
+        g.drawLine(sx, 0, sx, height);
 
         int osx = (int) Math.round(os);
         g.setColor(Color.GREEN);
-        g.drawLine(osx, 0, osx, H);
+        g.drawLine(osx, 0, osx, height);
 
     }
 }
+

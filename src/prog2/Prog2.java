@@ -1,21 +1,36 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package prog2;
 
-/**
- *
- * @author Sean
- */
+import javax.swing.SwingUtilities;
+import javax.swing.JFrame;
+import javax.swing.Timer;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
 public class Prog2 {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        // TODO code application logic here
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI();
+            }
+        });
     }
-    
+
+    public static void createAndShowGUI() {
+        JFrame f = new JFrame("Traveling Salesman");
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setSize(PlotPanel.width, PlotPanel.height);
+        final PlotPanel pp = new PlotPanel();
+        f.add(pp);
+        f.setVisible(true);
+
+        int delay = 100; //milliseconds
+        ActionListener taskPerformer = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                pp.go();
+            }
+        };
+        new Timer(delay, taskPerformer).start();
+    }
+
 }
