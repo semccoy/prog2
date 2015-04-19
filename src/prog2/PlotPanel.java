@@ -50,9 +50,6 @@ class PlotPanel extends JPanel {
         this.repaint();
     }
 
-    int startx = r.nextInt();
-    int starty = r.nextInt();
-
     int ovalSize = 10;
 
     double bestEver = distance(0, width, 0, height) * numPoints; // worst case scenario
@@ -63,8 +60,11 @@ class PlotPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // shuffle the points
+        // shuffle the points and select starting point
         shuffle(points);
+        // this doesnt work
+        int startx = (int) points[0].x;
+        int starty = (int) points[0].y;
 
         // reset path length
         travelDist = 0.0;
@@ -82,13 +82,15 @@ class PlotPanel extends JPanel {
             startx = newx;
             starty = newy;
         }
-        
+
         // assess that path length - if it was the shortest ever, save those points
         if (travelDist < bestEver) {
             System.arraycopy(points, 0, pointsCopy, 0, numPoints);
             bestEver = travelDist;
             System.out.println("Shortest path found: " + bestEver);
         }
+
+        // this doesnt work
         
         // and then display the shortest past ever found
         g.setColor(Color.green);
