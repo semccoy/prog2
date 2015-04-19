@@ -14,15 +14,23 @@ class PlotPanel extends JPanel {
     static int frameHeight = height + 35;
 
     static int numPoints = 40;
-    Point points[]; // 0,1
-    Random r;
+    Point points[] = new Point[numPoints]; // [0,1)
+    Random r = new Random();
 
     public PlotPanel() {
-        this.points = new Point[numPoints];
-        this.r = new Random();
         for (int i = 0; i < numPoints; i++) {
             this.points[i] = new Point(r.nextDouble() * width, r.nextDouble() * height);
 //            System.out.println("Point " + i + " = (" + this.points[i].x + ", " + this.points[i].y + ")");
+        }
+    }
+
+    public PlotPanel(int max) {
+        for (int i = 0; i < max / 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                this.points[i * 5 + j] = new Point(150 + i * 50, 250 + j * 50);
+            }
+//            System.out.println("Point " + i + " = (" + this.points[i].x + ", " + this.points[i].y + ")");
+
         }
     }
 
@@ -34,25 +42,29 @@ class PlotPanel extends JPanel {
         return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
     }
 
-    double travelDist = 0.0;
-    int counter = 0;
+    public double distance(int x1, int x2, int y1, int y2) {
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    }
 
-    void goRandom() {
+    void go() {
         this.revalidate();
         this.repaint();
-        // Run algorithm
-
-//        System.out.println("Distance travelled: " + travelDist);
-//        travelDist += distance(points[counter], points[counter + 1]);
-//        counter++;
     }
+
+    int startx = r.nextInt();
+    int starty = r.nextInt();
+
+    double bestEver = distance(0, width, 0, height) * numPoints;
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         int ovalSize = 10;
-        int startx = (int) points[0].x;
-        int starty = (int) points[0].x;
+        double travelDist = 0.0;
+        int saveStartx = 0;
+        int saveStarty = 0;
+        int saveNewx = 0;
+        int saveNewy = 0;
 
         g.setColor(Color.RED);
         g.drawOval(startx - ovalSize / 2, starty - ovalSize / 2, ovalSize, ovalSize);
@@ -61,25 +73,37 @@ class PlotPanel extends JPanel {
             int y = height - (int) points[i].y;
             g.setColor(Color.RED);
             g.drawOval(x, y, ovalSize, ovalSize);
-            g.setColor(Color.BLACK);
             int newx = x + ovalSize / 2;
             int newy = y + ovalSize / 2;
+            g.setColor(Color.BLACK);
             g.drawLine(startx, starty, newx, newy);
+            travelDist += distance(startx, starty, newx, newy);
+            saveStartx = startx;
+            saveStarty = starty;
+            saveNewx = newx;
+            saveNewy = newy;
+
             startx = newx;
             starty = newy;
         }
+        if (travelDist < bestEver) {
+            bestEver = travelDist;
+            System.out.println("Shortest path found: " + bestEver);
+            
+        }
+        shuffle(points);
     }
 
-//        int sx = (int) Math.round(s);
-//
-//        g.setColor(Color.PINK);
-//        g.fillRect((int) Math.round(sx - warp_width), 0, (int) Math.round(2.0 * warp_width), height);
-//
-//        g.setColor(Color.BLUE);
-//        g.drawLine(sx, 0, sx, height);
-//
-//        int osx = (int) Math.round(os);
-//        g.setColor(Color.GREEN);
-//        g.drawLine(osx, 0, osx, height);
-    //        
+    // also maybe create a preset set of points to test on
+    // Fisher-Yates shuffle (a random shuffle)
+    static void shuffle(Point[] ar) {
+        Random rnd = new Random();
+        for (int i = ar.length - 1; i > 0; i--) {
+            int index = rnd.nextInt(i + 1);
+            Point a = ar[index];
+            ar[index] = ar[i];
+            ar[i] = a;
+        }
+    }
+
 }
