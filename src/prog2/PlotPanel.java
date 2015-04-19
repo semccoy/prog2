@@ -13,7 +13,7 @@ class PlotPanel extends JPanel {
     static int frameWidth = width + 10;
     static int frameHeight = height + 35;
 
-    static int numPoints = 40;
+    static int numPoints = 6;
     Point points[] = new Point[numPoints]; // [0,1)
     Random r = new Random();
 
@@ -58,27 +58,19 @@ class PlotPanel extends JPanel {
     double bestEver = distance(0, width, 0, height) * numPoints; // worst case scenario
     double travelDist = bestEver; // just to start
 
-    Point[] pointsCopy = new Point[numPoints];
-
-    int iterations = 0;
+    Point[] pointsCopy = points;
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (travelDist < bestEver) {
-            bestEver = travelDist;
-            System.out.println("Shortest path found: " + bestEver);
-            g.setColor(Color.red);
-            pointsCopy = points; // if we've found a new best path, save those points for later use
-        } else { // if not, don't save them
-            g.setColor(Color.black);
-        }
-
-        travelDist = 0.0;
+        // shuffle the points
         shuffle(points);
 
-        g.drawOval(startx - ovalSize / 2, starty - ovalSize / 2, ovalSize, ovalSize);
+        // reset path length
+        travelDist = 0.0;
 
+        // connect the points in whatever order and see how long that path was
+        g.setColor(Color.black);
         for (int i = 0; i < numPoints; i++) {
             int x = (int) points[i].x;
             int y = height - (int) points[i].y;
@@ -87,27 +79,28 @@ class PlotPanel extends JPanel {
             int newy = y + ovalSize / 2;
             g.drawLine(startx, starty, newx, newy);
             travelDist += distance(startx, starty, newx, newy);
-
             startx = newx;
             starty = newy;
         }
-
-//        if (iterations > 0) {
-//            g.setColor(Color.green);
-//
-//            for (int i = 0; i < numPoints; i++) {
-//                int x = (int) pointsCopy[i].x;
-//                int y = height - (int) pointsCopy[i].y;
-//                int newx = x + ovalSize / 2;
-//                int newy = y + ovalSize / 2;
-//                g.drawLine(startx, starty, newx, newy);
-//                travelDist += distance(startx, starty, newx, newy);
-//
-//                startx = newx;
-//                starty = newy;
-//            }
-//        }
-//        iterations++;
+        
+        // assess that path length - if it was the shortest ever, save those points
+        if (travelDist < bestEver) {
+            System.arraycopy(points, 0, pointsCopy, 0, numPoints);
+            bestEver = travelDist;
+            System.out.println("Shortest path found: " + bestEver);
+        }
+        
+        // and then display the shortest past ever found
+        g.setColor(Color.green);
+        for (int i = 0; i < numPoints; i++) {
+            int x = (int) pointsCopy[i].x;
+            int y = height - (int) pointsCopy[i].y;
+            int newx = x + ovalSize / 2;
+            int newy = y + ovalSize / 2;
+            g.drawLine(startx, starty, newx, newy);
+            startx = newx;
+            starty = newy;
+        }
     }
 
     // also maybe create a preset set of points to test on
