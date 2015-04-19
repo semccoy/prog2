@@ -19,7 +19,6 @@ public class Prog2 {
 
     public static void createAndShowGUI() {
         final JFrame f = new JFrame("Travelling Salesman Problem");
-//        for (int i = 0; i < 5; i++) {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(PlotPanel.frameWidth, PlotPanel.frameHeight);
         final PlotPanel pp = new PlotPanel(); // random Points
@@ -27,7 +26,7 @@ public class Prog2 {
         f.add(pp);
         f.setVisible(true);
 
-        int delay = 10; //milliseconds
+        int delay = 1000; //milliseconds
         ActionListener taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 pp.go();
@@ -37,4 +36,3 @@ public class Prog2 {
         new Timer(delay, taskPerformer).start();
     }
 }
-//}
