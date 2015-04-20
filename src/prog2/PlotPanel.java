@@ -24,15 +24,14 @@ class PlotPanel extends JPanel {
         }
     }
 
-    public PlotPanel(int max) {
-        for (int i = 0; i < max / 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                this.points[i * 5 + j] = new Point(150 + i * 50, 250 + j * 50);
-//                System.out.println("Point " + (i * 5 + j) + " = (" + this.points[i].x + ", " + this.points[i].y + ")");
-            }
-        }
-    }
-
+//    public PlotPanel(int max) {
+//        for (int i = 0; i < max / 5; i++) {
+//            for (int j = 0; j < 5; j++) {
+//                this.points[i * 5 + j] = new Point(150 + i * 50, 250 + j * 50);
+////                System.out.println("Point " + (i * 5 + j) + " = (" + this.points[i].x + ", " + this.points[i].y + ")");
+//            }
+//        }
+//    }
     public Dimension getPreferredSize() {
         return new Dimension(width, height);
     }
@@ -55,53 +54,49 @@ class PlotPanel extends JPanel {
     double bestEver = distance(0, width, 0, height) * numPoints; // worst case scenario
     double travelDist = bestEver; // just to start
 
-    Point[] pointsCopy = points;
+    Point[] pointsCopy = new Point[numPoints];
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         // shuffle the points and select starting point
         shuffle(points);
-        // this doesnt work
-        int startx = (int) points[0].x;
-        int starty = (int) points[0].y;
 
         // reset path length
         travelDist = 0.0;
-
-        // connect the points in whatever order and see how long that path was
+        
+        // draw points and lines
         g.setColor(Color.black);
-        for (int i = 0; i < numPoints; i++) {
-            int x = (int) points[i].x;
-            int y = height - (int) points[i].y;
-            g.drawOval(x, y, ovalSize, ovalSize);
-            int newx = x + ovalSize / 2;
-            int newy = y + ovalSize / 2;
-            g.drawLine(startx, starty, newx, newy);
-            travelDist += distance(startx, starty, newx, newy);
-            startx = newx;
-            starty = newy;
+        for (int i = 0; i < numPoints - 1; i++) {
+            int cx = (int) Math.round(points[i].x);
+            int cy = (int) Math.round(points[i].y);
+            g.drawOval(cx - ovalSize/2, cy -ovalSize/2, ovalSize, ovalSize);
+            int newx = (int) Math.round(points[(i + 1)].x);
+            int newy = (int) Math.round(points[(i + 1)].y);
+            g.drawOval(newx- ovalSize/2, newy- ovalSize/2, ovalSize, ovalSize);
+            g.drawLine(cx, cy, newx, newy);
+            travelDist += distance(cx, cy, newx, newy);
         }
-
+        
+        
         // assess that path length - if it was the shortest ever, save those points
         if (travelDist < bestEver) {
             System.arraycopy(points, 0, pointsCopy, 0, numPoints);
             bestEver = travelDist;
             System.out.println("Shortest path found: " + bestEver);
         }
-
-        // this doesnt work
         
+
         // and then display the shortest past ever found
         g.setColor(Color.green);
-        for (int i = 0; i < numPoints; i++) {
-            int x = (int) pointsCopy[i].x;
-            int y = height - (int) pointsCopy[i].y;
-            int newx = x + ovalSize / 2;
-            int newy = y + ovalSize / 2;
-            g.drawLine(startx, starty, newx, newy);
-            startx = newx;
-            starty = newy;
+        for (int i = 0; i < numPoints - 1; i++) {
+            int cx = (int) Math.round(pointsCopy[i].x);
+            int cy = (int) Math.round(pointsCopy[i].y);
+            g.drawOval(cx - ovalSize/2, cy -ovalSize/2, ovalSize, ovalSize);
+            int newx = (int) Math.round(pointsCopy[(i + 1)].x);
+            int newy = (int) Math.round(pointsCopy[(i + 1)].y);
+            g.drawOval(newx- ovalSize/2, newy- ovalSize/2, ovalSize, ovalSize);
+            g.drawLine(cx, cy, newx, newy);
         }
     }
 

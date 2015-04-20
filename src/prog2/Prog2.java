@@ -23,10 +23,11 @@ public class Prog2 {
         f.setSize(PlotPanel.frameWidth, PlotPanel.frameHeight);
         final PlotPanel pp = new PlotPanel(); // random Points
 //        final PlotPanel pp = new PlotPanel(numPoints); // fixed Points (mostly for testing)
+        // make this one circular
         f.add(pp);
         f.setVisible(true);
 
-        int delay = 100; //milliseconds
+        int delay = 1000; //milliseconds
         ActionListener taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 pp.go();
