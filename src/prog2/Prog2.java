@@ -27,7 +27,7 @@ public class Prog2 {
         f.add(pp);
         f.setVisible(true);
 
-        int delay = 1000; //milliseconds
+        int delay = 10; //milliseconds
         ActionListener taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 pp.go();

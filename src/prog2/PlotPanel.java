@@ -13,7 +13,7 @@ class PlotPanel extends JPanel {
     static int frameWidth = width + 10;
     static int frameHeight = height + 35;
 
-    static int numPoints = 6;
+    static int numPoints = 10;
     Point points[] = new Point[numPoints]; // [0,1)
     Random r = new Random();
 
@@ -55,7 +55,7 @@ class PlotPanel extends JPanel {
     double travelDist = bestEver; // just to start
 
     Point[] pointsCopy = new Point[numPoints];
-
+    
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -64,38 +64,36 @@ class PlotPanel extends JPanel {
 
         // reset path length
         travelDist = 0.0;
-        
+
         // draw points and lines
-        g.setColor(Color.black);
+        g.setColor(Color.white);
         for (int i = 0; i < numPoints - 1; i++) {
             int cx = (int) Math.round(points[i].x);
             int cy = (int) Math.round(points[i].y);
-            g.drawOval(cx - ovalSize/2, cy -ovalSize/2, ovalSize, ovalSize);
+            g.drawOval(cx - ovalSize / 2, cy - ovalSize / 2, ovalSize, ovalSize);
             int newx = (int) Math.round(points[(i + 1)].x);
             int newy = (int) Math.round(points[(i + 1)].y);
-            g.drawOval(newx- ovalSize/2, newy- ovalSize/2, ovalSize, ovalSize);
+            g.drawOval(newx - ovalSize / 2, newy - ovalSize / 2, ovalSize, ovalSize);
             g.drawLine(cx, cy, newx, newy);
             travelDist += distance(cx, cy, newx, newy);
         }
-        
-        
+
         // assess that path length - if it was the shortest ever, save those points
         if (travelDist < bestEver) {
             System.arraycopy(points, 0, pointsCopy, 0, numPoints);
             bestEver = travelDist;
             System.out.println("Shortest path found: " + bestEver);
         }
-        
 
         // and then display the shortest past ever found
-        g.setColor(Color.green);
+        g.setColor(Color.black);
         for (int i = 0; i < numPoints - 1; i++) {
             int cx = (int) Math.round(pointsCopy[i].x);
             int cy = (int) Math.round(pointsCopy[i].y);
-            g.drawOval(cx - ovalSize/2, cy -ovalSize/2, ovalSize, ovalSize);
+            g.drawOval(cx - ovalSize / 2, cy - ovalSize / 2, ovalSize, ovalSize);
             int newx = (int) Math.round(pointsCopy[(i + 1)].x);
             int newy = (int) Math.round(pointsCopy[(i + 1)].y);
-            g.drawOval(newx- ovalSize/2, newy- ovalSize/2, ovalSize, ovalSize);
+            g.drawOval(newx - ovalSize / 2, newy - ovalSize / 2, ovalSize, ovalSize);
             g.drawLine(cx, cy, newx, newy);
         }
     }
