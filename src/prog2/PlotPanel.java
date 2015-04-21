@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Random;
 import javax.swing.JPanel;
+import static prog2.Prog2.*;
 
 class PlotPanel extends JPanel {
 
@@ -55,52 +56,60 @@ class PlotPanel extends JPanel {
     double travelDist = bestEver; // just to start
 
     Point[] pointsCopy = new Point[numPoints];
-    
+
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // shuffle the points and select starting point
-        shuffle(points);
+        
 
-        // reset path length
-        travelDist = 0.0;
-
-        // draw points and lines
-        g.setColor(Color.white);
-        for (int i = 0; i < numPoints - 1; i++) {
-            int cx = (int) Math.round(points[i].x);
-            int cy = (int) Math.round(points[i].y);
-            g.drawOval(cx - ovalSize / 2, cy - ovalSize / 2, ovalSize, ovalSize);
-            int newx = (int) Math.round(points[(i + 1)].x);
-            int newy = (int) Math.round(points[(i + 1)].y);
-            g.drawOval(newx - ovalSize / 2, newy - ovalSize / 2, ovalSize, ovalSize);
-            g.drawLine(cx, cy, newx, newy);
-            travelDist += distance(cx, cy, newx, newy);
+            // shuffle the points and select starting point
+        if (randomMode) {
+            shuffleRandom(points);
+//        } else if (nnMode) {
+//            shuffleNN(points);
+//        }
         }
+            // reset path length
+            travelDist = 0.0;
 
-        // assess that path length - if it was the shortest ever, save those points
-        if (travelDist < bestEver) {
-            System.arraycopy(points, 0, pointsCopy, 0, numPoints);
-            bestEver = travelDist;
-            System.out.println("Shortest path found: " + bestEver);
-        }
+            // draw points and lines
+            g.setColor(Color.white);
+            for (int i = 0; i < numPoints - 1; i++) {
+                int cx = (int) Math.round(points[i].x);
+                int cy = (int) Math.round(points[i].y);
+                g.drawOval(cx - ovalSize / 2, cy - ovalSize / 2, ovalSize, ovalSize);
+                int newx = (int) Math.round(points[(i + 1)].x);
+                int newy = (int) Math.round(points[(i + 1)].y);
+                g.drawOval(newx - ovalSize / 2, newy - ovalSize / 2, ovalSize, ovalSize);
+                g.drawLine(cx, cy, newx, newy);
+                travelDist += distance(cx, cy, newx, newy);
+            }
 
-        // and then display the shortest past ever found
-        g.setColor(Color.black);
-        for (int i = 0; i < numPoints - 1; i++) {
-            int cx = (int) Math.round(pointsCopy[i].x);
-            int cy = (int) Math.round(pointsCopy[i].y);
-            g.drawOval(cx - ovalSize / 2, cy - ovalSize / 2, ovalSize, ovalSize);
-            int newx = (int) Math.round(pointsCopy[(i + 1)].x);
-            int newy = (int) Math.round(pointsCopy[(i + 1)].y);
-            g.drawOval(newx - ovalSize / 2, newy - ovalSize / 2, ovalSize, ovalSize);
-            g.drawLine(cx, cy, newx, newy);
+            // assess that path length - if it was the shortest ever, save those points
+            if (travelDist < bestEver) {
+                System.arraycopy(points, 0, pointsCopy, 0, numPoints);
+                bestEver = travelDist;
+                System.out.println("Shortest path found: " + bestEver);
+            }
+
+            // and then display the shortest past ever found
+            g.setColor(Color.black);
+            for (int i = 0; i < numPoints - 1; i++) {
+                int cx = (int) Math.round(pointsCopy[i].x);
+                int cy = (int) Math.round(pointsCopy[i].y);
+                g.drawOval(cx - ovalSize / 2, cy - ovalSize / 2, ovalSize, ovalSize);
+                int newx = (int) Math.round(pointsCopy[(i + 1)].x);
+                int newy = (int) Math.round(pointsCopy[(i + 1)].y);
+                g.drawOval(newx - ovalSize / 2, newy - ovalSize / 2, ovalSize, ovalSize);
+                g.drawLine(cx, cy, newx, newy);
+            }
+        
         }
-    }
+    
 
     // also maybe create a preset set of points to test on
     // Fisher-Yates shuffle (a random shuffle)
-    static void shuffle(Point[] ar) {
+     void shuffleRandom(Point[] ar) {
         Random rnd = new Random();
         for (int i = ar.length - 1; i > 0; i--) {
             int index = rnd.nextInt(i + 1);
@@ -109,5 +118,24 @@ class PlotPanel extends JPanel {
             ar[i] = a;
         }
     }
+    
+     void shuffleNN(Point[] ar) {
+        shuffleRandom(ar);
+        Random rnd = new Random();
+        Point start = ar[0]; // select random starting point from which we'll find nearest neighbors
+        
+        for (int i = 1; i < ar.length; i++) {
+            double dist = distance(start,ar[i]);
+        }
+        
+        
+        for (int i = ar.length - 1; i > 0; i--) {
+            int index = rnd.nextInt(i + 1);
+            Point a = ar[index];
+            ar[index] = ar[i];
+            ar[i] = a;
+        }
+    }
+    
 
 }

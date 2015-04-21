@@ -16,6 +16,9 @@ public class Prog2 {
             }
         });
     }
+    
+    public static boolean randomMode = true;
+    public static boolean nnMode = false;
 
     public static void createAndShowGUI() {
         final JFrame f = new JFrame("Travelling Salesman Problem");
