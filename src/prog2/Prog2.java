@@ -1,10 +1,7 @@
 package prog2;
 
-import javax.swing.SwingUtilities;
-import javax.swing.JFrame;
-import javax.swing.Timer;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.*;
+import java.awt.event.*;
 import static prog2.PlotPanel.*;
 
 public class Prog2 {
@@ -17,8 +14,8 @@ public class Prog2 {
         });
     }
     
-    public static boolean randomMode = true;
-    public static boolean nnMode = false;
+    public static boolean randomMode = false;
+    public static boolean nnMode = true;
 
     public static void createAndShowGUI() {
         final JFrame f = new JFrame("Travelling Salesman Problem");
