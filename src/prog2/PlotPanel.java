@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.*;
 import java.util.Random;
+import java.util.List;
 import javax.swing.JPanel;
 import static prog2.Prog2.*;
 
@@ -120,53 +121,15 @@ class PlotPanel extends JPanel {
     // put points in a NN order
     void shuffleNN(Point[] ar) {
         shuffleRandom(ar);
-        DPoint[] dpa = new DPoint[numPoints];
+        List<DPoint> dpl = new ArrayList<DPoint>(numPoints);
 
         for (int i = 0; i < ar.length; i++) {
             double dist = distance(ar[0], ar[i]);
             DPoint dpt = new DPoint(ar[i], dist);
-            dpa[i] = dpt;
-
+            dpl.add(dpt);
         }
+        Collections.sort(dpl, new DPointComp());
 
-//        for (DPoint dp : dpa) {
-//            
-//        }
-        int index;
-        int count;
-        for (DPoint i1 : dpa) {
-            index = 0;
-            count = 0;
-            for (DPoint i2 : dpa) {
-                if (i2.y < i1.y) {
-                    index++;
-                } else if (i2.y == i1.y) {
-                    count++;
-                }
-            }
-            while (count != 0) {
-                count--;
-                dpa[index]= i1;
-                index++;
-            }
-        }
-
-//        insertionSort(dpa);
-//        for (int i = 0; i < dpa.length; i++) {
-//            System.out.println(dpa[i].pt.x + " " + dpa[i].pt.y);
-//        }
     }
 
-    public static void insertionSort(DPoint array[]) {
-        int n = array.length;
-        for (int j = 1; j < n; j++) {
-            double key = array[j].y;
-            int i = j - 1;
-            while ((i > -1) && (array[i].y > key)) {
-                array[i + 1] = array[i];
-                i--;
-            }
-            array[i + 1] = array[j];
-        }
-    }
 }
