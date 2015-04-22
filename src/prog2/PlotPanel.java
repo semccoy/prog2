@@ -128,13 +128,30 @@ class PlotPanel extends JPanel {
             dpa[i] = dpt;
 
         }
-        
+
 //        for (DPoint dp : dpa) {
 //            
 //        }
-        
-//        insertionSort(dpa);
+        int index;
+        int count;
+        for (DPoint i1 : dpa) {
+            index = 0;
+            count = 0;
+            for (DPoint i2 : dpa) {
+                if (i2.y < i1.y) {
+                    index++;
+                } else if (i2.y == i1.y) {
+                    count++;
+                }
+            }
+            while (count != 0) {
+                count--;
+                dpa[index]= i1;
+                index++;
+            }
+        }
 
+//        insertionSort(dpa);
 //        for (int i = 0; i < dpa.length; i++) {
 //            System.out.println(dpa[i].pt.x + " " + dpa[i].pt.y);
 //        }
