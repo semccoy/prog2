@@ -121,15 +121,43 @@ class PlotPanel extends JPanel {
     // put points in a NN order
     void shuffleNN(Point[] ar) {
         shuffleRandom(ar);
-        List<DPoint> dpl = new ArrayList<DPoint>(numPoints);
+        List<Point> avail = new ArrayList<Point>();
+        List<Point> used = new ArrayList<Point>();
+        List<DPoint> dpl = new ArrayList<DPoint>();
 
-        for (int i = 0; i < ar.length; i++) {
-            double dist = distance(ar[0], ar[i]);
-            DPoint dpt = new DPoint(ar[i], dist);
-            dpl.add(dpt);
+        // add first point to used points
+        used.add(ar[0]);
+        System.out.println(used.get(0).x);
+
+        // add rest to available points
+        for (int i = 1; i < ar.length; i++) {
+            avail.add(avail.size(), ar[i]);
+            System.out.println(avail.get(i).x);
         }
-        Collections.sort(dpl, new DPointComp());
 
+        // while there are points left to connect to
+        while (used.size() < numPoints) {
+
+            // find distance between each available point and last used point
+            // and save that distance in the dpoint list
+            for (int i = 0; i < avail.size(); i++) {
+                double dist = distance(used.get(used.size()), avail.get(i));
+                DPoint dpt = new DPoint(avail.get(i), dist);
+                dpl.add(dpt);
+            }
+
+            // sort the dpoint list by distance
+            Collections.sort(dpl, new DPointComp());
+
+            // remove closest point from available and add it to used
+            avail.remove(dpl.get(0).pt);
+            used.add(dpl.get(0).pt);
+
+        }
+
+        // reset ar to be used
+        for (int i = 0; i < used.size(); i++) {
+            ar[i] = used.get(i);
+        }
     }
-
 }
