@@ -16,10 +16,10 @@ class PlotPanel extends JPanel {
     static int frameWidth = width + 10;
     static int frameHeight = height + 35;
 
-    static int numPoints = 10;
     Point points[] = new Point[numPoints]; // [0,1)
     Random r = new Random();
 
+    // random
     public PlotPanel() {
         for (int i = 0; i < numPoints; i++) {
             this.points[i] = new Point(r.nextDouble() * width, r.nextDouble() * height);
@@ -27,14 +27,28 @@ class PlotPanel extends JPanel {
         }
     }
 
-//    public PlotPanel(int max) {
-//        for (int i = 0; i < max / 5; i++) {
-//            for (int j = 0; j < 5; j++) {
-//                this.points[i * 5 + j] = new Point(150 + i * 50, 250 + j * 50);
-////                System.out.println("Point " + (i * 5 + j) + " = (" + this.points[i].x + ", " + this.points[i].y + ")");
-//            }
-//        }
-//    }
+    // rectangle
+    public PlotPanel(int max) {
+        for (int i = 0; i < max / 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                this.points[i * 5 + j] = new Point(100 + i * 50, 250 + j * 50);
+//                System.out.println("Point " + (i * 5 + j) + " = (" + this.points[i].x + ", " + this.points[i].y + ")");
+            }
+        }
+    }
+
+    public PlotPanel(double theta) {
+        int midx = width / 2;
+        int midy = height / 2;
+        for (int i = 0; i < numPoints; i++) {
+            double t = 2 * Math.PI * r.nextDouble();
+            int x = (int) Math.round(radius * Math.cos(t));
+            int y = (int) Math.round(radius * Math.sin(t));
+            this.points[i] = new Point(x + midx, y + midy);
+//            System.out.println("Point " + i + " = (" + this.points[i].x + ", " + this.points[i].y + ")");
+        }
+    }
+
     public Dimension getPreferredSize() {
         return new Dimension(width, height);
     }
@@ -151,7 +165,6 @@ class PlotPanel extends JPanel {
             used.add(dpl.get(0).pt);
             dpl.clear();
         }
-        
 
         // reset ar to be used
         for (int i = 0; i < used.size(); i++) {
