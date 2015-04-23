@@ -127,21 +127,18 @@ class PlotPanel extends JPanel {
 
         // add first point to used points
         used.add(ar[0]);
-        System.out.println(used.get(0).x);
 
         // add rest to available points
         for (int i = 1; i < ar.length; i++) {
-            avail.add(avail.size(), ar[i]);
-            System.out.println(avail.get(i).x);
+            avail.add(ar[i]);
         }
 
         // while there are points left to connect to
         while (used.size() < numPoints) {
-
             // find distance between each available point and last used point
             // and save that distance in the dpoint list
             for (int i = 0; i < avail.size(); i++) {
-                double dist = distance(used.get(used.size()), avail.get(i));
+                double dist = distance(used.get(used.size() - 1), avail.get(i));
                 DPoint dpt = new DPoint(avail.get(i), dist);
                 dpl.add(dpt);
             }
@@ -152,12 +149,14 @@ class PlotPanel extends JPanel {
             // remove closest point from available and add it to used
             avail.remove(dpl.get(0).pt);
             used.add(dpl.get(0).pt);
-
+            dpl.clear();
         }
+        
 
         // reset ar to be used
         for (int i = 0; i < used.size(); i++) {
             ar[i] = used.get(i);
         }
+
     }
 }
