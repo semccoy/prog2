@@ -36,7 +36,7 @@ class PlotPanel extends JPanel {
 //                System.out.println("Point " + (i * 5 + j) + " = (" + this.points[i].x + ", " + this.points[i].y + ")");
             }
         }
-        System.out.println("Shortest possible path: " + 50 * (numPoints -1));
+        System.out.println("Shortest possible path: " + 50 * (numPoints - 1));
     }
 
     public PlotPanel(double theta) {
@@ -49,7 +49,7 @@ class PlotPanel extends JPanel {
             this.points[i] = new Point(x + midx, y + midy);
 //            System.out.println("Point " + i + " = (" + this.points[i].x + ", " + this.points[i].y + ")");
         }
-         System.out.println("Circumference path (2πr): " + 2 * Math.PI * radius);
+        System.out.println("Circumference path (2πr): " + 2 * Math.PI * radius);
     }
 
     public Dimension getPreferredSize() {
@@ -73,6 +73,7 @@ class PlotPanel extends JPanel {
 
     double bestEver = distance(0, width, 0, height) * numPoints; // worst case scenario
     double travelDist = bestEver; // just to start
+    double travelDist2 = bestEver; // just to start
 
     Point[] pointsCopy = new Point[numPoints];
 
@@ -84,8 +85,6 @@ class PlotPanel extends JPanel {
             shuffleRandom(points);
         } else if (nnMode) {
             shuffleNN(points);
-        } else if (saMode) {
-            shuffleSA(points);
         }
 
         // reset path length
@@ -105,28 +104,74 @@ class PlotPanel extends JPanel {
                 travelDist += distance(cx, newx, cy, newy);
             }
         } else if (saMode) {
+            travelDist2 = 0.0;
+
+            List<Point> arl = new ArrayList<Point>();
+
+            // put points into array list in whatever order
+            for (int i = 0; i < points.length; i++) {
+                arl.add(points[i]);
+            }
+
+            // draw them and find the distance between them
             for (int i = 0; i < numPoints - 1; i++) {
-                int cx = (int) Math.round(points[i].x);
-                int cy = (int) Math.round(points[i].y);
+                int cx = (int) Math.round(arl.get(i).x);
+                int cy = (int) Math.round(arl.get(i).y);
                 g.drawOval(cx - ovalSize / 2, cy - ovalSize / 2, ovalSize, ovalSize);
-                int newx = (int) Math.round(points[(i + 1)].x);
-                int newy = (int) Math.round(points[(i + 1)].y);
+                int newx = (int) Math.round(arl.get(i + 1).x);
+                int newy = (int) Math.round(arl.get(i + 1).y);
                 g.drawOval(newx - ovalSize / 2, newy - ovalSize / 2, ovalSize, ovalSize);
                 g.drawLine(cx, cy, newx, newy);
                 travelDist += distance(cx, newx, cy, newy);
             }
+
+            // then select two points
+            int rp1 = r.nextInt(points.length);
+            int rp2 = r.nextInt(points.length);
+
+            // and swap them
+            Collections.swap(arl, rp1, rp2);
+
+            // then draw new path
+            g.setColor(Color.cyan);
+            for (int i = 0; i < numPoints - 1; i++) {
+                int cx = (int) Math.round(arl.get(i).x);
+                int cy = (int) Math.round(arl.get(i).y);
+                g.drawOval(cx - ovalSize / 2, cy - ovalSize / 2, ovalSize, ovalSize);
+                int newx = (int) Math.round(arl.get(i + 1).x);
+                int newy = (int) Math.round(arl.get(i + 1).y);
+                g.drawOval(newx - ovalSize / 2, newy - ovalSize / 2, ovalSize, ovalSize);
+                g.drawLine(cx, cy, newx, newy);
+                travelDist2 += distance(cx, newx, cy, newy);
+            }
+
+            double temperature = r.nextDouble();
+
+            // if new path is better, replace old path with new path
+            if (travelDist2 < travelDist) {
+                for (int i = 0; i < arl.size(); i++) {
+                    points[i] = arl.get(i);
+                }
+                // or if the new path is worse but temperature if lower
+            } else if (temperature < 0.05) {
+                System.out.println("Poor change made: " + travelDist2 + " replaced " + travelDist);
+                travelDist = travelDist2;
+                for (int i = 0; i < arl.size(); i++) {
+                    points[i] = arl.get(i);
+                }
+            }
+            // uncomment shufflerandom earlier?
         }
 
         // assess that path length - if it was the shortest ever, save those points
-        if (travelDist < bestEver) {
+        if (travelDist < bestEver || travelDist == travelDist2) {
             System.arraycopy(points, 0, pointsCopy, 0, numPoints);
             bestEver = travelDist;
-            System.out.println("Shortest path found: " + bestEver);
+            System.out.println("Best path found: " + bestEver);
         }
 
-        // and then display the shortest past ever found (unless you're doing SA)
+        // and then display the shortest past ever found
         g.setColor(Color.black);
-
         for (int i = 0; i < numPoints - 1; i++) {
             int cx = (int) Math.round(pointsCopy[i].x);
             int cy = (int) Math.round(pointsCopy[i].y);
@@ -188,24 +233,6 @@ class PlotPanel extends JPanel {
         // reset ar to be used
         for (int i = 0; i < used.size(); i++) {
             ar[i] = used.get(i);
-        }
-
-    }
-
-    void shuffleSA(Point[] ar) {
-        List<Point> arl = new ArrayList<Point>();
-
-        for (int i = 0; i < ar.length; i++) {
-            arl.add(ar[i]);
-        }
-
-        int rp1 = r.nextInt(ar.length);
-        int rp2 = r.nextInt(ar.length);
-
-        Collections.swap(arl, rp1, rp2);
-
-        for (int i = 0; i < arl.size(); i++) {
-            ar[i] = arl.get(i);
         }
 
     }

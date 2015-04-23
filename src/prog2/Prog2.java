@@ -16,25 +16,22 @@ public class Prog2 {
 
     public static int numPoints = 50;
     public static int speed = 100; // ms per loop
-    
+
     public static boolean randomMode = false;
-    public static boolean nnMode = true;
-    public static boolean saMode = false;
-    
-    
-    
-    
+    public static boolean nnMode = false;
+    public static boolean saMode = true;
 
     public static void createAndShowGUI() {
         final JFrame f = new JFrame("Travelling Salesman Problem");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(PlotPanel.frameWidth, PlotPanel.frameHeight);
-
-//        final PlotPanel pp = new PlotPanel(); // random
-        final PlotPanel pp = new PlotPanel(numPoints); // rectangle
+        f.setBounds(640, 0, width, height);
+        final PlotPanel pp = new PlotPanel(); // random
+//        final PlotPanel pp = new PlotPanel(numPoints); // rectangle
 //        final PlotPanel pp = new PlotPanel(numPoints * 1.0); // circle
-        
+
         f.add(pp);
+
         f.setVisible(true);
 
         int delay = speed;
