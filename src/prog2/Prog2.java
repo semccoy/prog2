@@ -15,9 +15,10 @@ public class Prog2 {
     }
 
     public static boolean randomMode = false;
-    public static boolean nnMode = true;
+    public static boolean nnMode = false;
+    public static boolean simAnn = true;
     public static int speed = 100; // ms per loop
-    public static int numPoints = 100;
+    public static int numPoints = 10;
     public static int radius = 200;
 
     public static void createAndShowGUI() {
@@ -25,9 +26,9 @@ public class Prog2 {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(PlotPanel.frameWidth, PlotPanel.frameHeight);
 
-//        final PlotPanel pp = new PlotPanel(); // random
+        final PlotPanel pp = new PlotPanel(); // random
 //        final PlotPanel pp = new PlotPanel(numPoints); // rectangle
-        final PlotPanel pp = new PlotPanel(numPoints * 1.0); // circle
+//        final PlotPanel pp = new PlotPanel(numPoints * 1.0); // circle
         
         f.add(pp);
         f.setVisible(true);

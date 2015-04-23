@@ -81,6 +81,8 @@ class PlotPanel extends JPanel {
             shuffleRandom(points);
         } else if (nnMode) {
             shuffleNN(points);
+        } else if (simAnn) {
+            shuffleSA(points);
         }
 
         // reset path length
@@ -171,5 +173,23 @@ class PlotPanel extends JPanel {
             ar[i] = used.get(i);
         }
 
+    }
+    
+    void shuffleSA(Point[] ar) {
+        List<Point> arl = new ArrayList<Point>();
+        
+        for (int i = 0; i < ar.length; i++) {
+            arl.add(ar[i]);
+        }
+        
+        int rp1 = r.nextInt(ar.length);
+        int rp2 = r.nextInt(ar.length);
+        
+        Collections.swap(arl, rp1, rp2);
+        
+        for (int i = 0; i < arl.size(); i++) {
+            ar[i] = arl.get(i);
+        }
+        
     }
 }
