@@ -13,6 +13,7 @@ class PlotPanel extends JPanel {
 
     static int width = 640;
     static int height = 640;
+    public static int radius = 200;
     static int frameWidth = width + 10;
     static int frameHeight = height + 35;
 
@@ -35,6 +36,7 @@ class PlotPanel extends JPanel {
 //                System.out.println("Point " + (i * 5 + j) + " = (" + this.points[i].x + ", " + this.points[i].y + ")");
             }
         }
+        System.out.println("Shortest possible path: " + 50 * (numPoints -1));
     }
 
     public PlotPanel(double theta) {
@@ -47,6 +49,7 @@ class PlotPanel extends JPanel {
             this.points[i] = new Point(x + midx, y + midy);
 //            System.out.println("Point " + i + " = (" + this.points[i].x + ", " + this.points[i].y + ")");
         }
+         System.out.println("Circumference path (2πr): " + 2 * Math.PI * radius);
     }
 
     public Dimension getPreferredSize() {
@@ -81,7 +84,7 @@ class PlotPanel extends JPanel {
             shuffleRandom(points);
         } else if (nnMode) {
             shuffleNN(points);
-        } else if (simAnn) {
+        } else if (saMode) {
             shuffleSA(points);
         }
 
@@ -90,15 +93,28 @@ class PlotPanel extends JPanel {
 
         // draw points and lines
         g.setColor(Color.white);
-        for (int i = 0; i < numPoints - 1; i++) {
-            int cx = (int) Math.round(points[i].x);
-            int cy = (int) Math.round(points[i].y);
-            g.drawOval(cx - ovalSize / 2, cy - ovalSize / 2, ovalSize, ovalSize);
-            int newx = (int) Math.round(points[(i + 1)].x);
-            int newy = (int) Math.round(points[(i + 1)].y);
-            g.drawOval(newx - ovalSize / 2, newy - ovalSize / 2, ovalSize, ovalSize);
-            g.drawLine(cx, cy, newx, newy);
-            travelDist += distance(cx, cy, newx, newy);
+        if (randomMode || nnMode) {
+            for (int i = 0; i < numPoints - 1; i++) {
+                int cx = (int) Math.round(points[i].x);
+                int cy = (int) Math.round(points[i].y);
+                g.drawOval(cx - ovalSize / 2, cy - ovalSize / 2, ovalSize, ovalSize);
+                int newx = (int) Math.round(points[(i + 1)].x);
+                int newy = (int) Math.round(points[(i + 1)].y);
+                g.drawOval(newx - ovalSize / 2, newy - ovalSize / 2, ovalSize, ovalSize);
+                g.drawLine(cx, cy, newx, newy);
+                travelDist += distance(cx, newx, cy, newy);
+            }
+        } else if (saMode) {
+            for (int i = 0; i < numPoints - 1; i++) {
+                int cx = (int) Math.round(points[i].x);
+                int cy = (int) Math.round(points[i].y);
+                g.drawOval(cx - ovalSize / 2, cy - ovalSize / 2, ovalSize, ovalSize);
+                int newx = (int) Math.round(points[(i + 1)].x);
+                int newy = (int) Math.round(points[(i + 1)].y);
+                g.drawOval(newx - ovalSize / 2, newy - ovalSize / 2, ovalSize, ovalSize);
+                g.drawLine(cx, cy, newx, newy);
+                travelDist += distance(cx, newx, cy, newy);
+            }
         }
 
         // assess that path length - if it was the shortest ever, save those points
@@ -108,8 +124,9 @@ class PlotPanel extends JPanel {
             System.out.println("Shortest path found: " + bestEver);
         }
 
-        // and then display the shortest past ever found
+        // and then display the shortest past ever found (unless you're doing SA)
         g.setColor(Color.black);
+
         for (int i = 0; i < numPoints - 1; i++) {
             int cx = (int) Math.round(pointsCopy[i].x);
             int cy = (int) Math.round(pointsCopy[i].y);
@@ -174,22 +191,22 @@ class PlotPanel extends JPanel {
         }
 
     }
-    
+
     void shuffleSA(Point[] ar) {
         List<Point> arl = new ArrayList<Point>();
-        
+
         for (int i = 0; i < ar.length; i++) {
             arl.add(ar[i]);
         }
-        
+
         int rp1 = r.nextInt(ar.length);
         int rp2 = r.nextInt(ar.length);
-        
+
         Collections.swap(arl, rp1, rp2);
-        
+
         for (int i = 0; i < arl.size(); i++) {
             ar[i] = arl.get(i);
         }
-        
+
     }
 }

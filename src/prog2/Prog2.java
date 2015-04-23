@@ -14,20 +14,24 @@ public class Prog2 {
         });
     }
 
-    public static boolean randomMode = false;
-    public static boolean nnMode = false;
-    public static boolean simAnn = true;
+    public static int numPoints = 50;
     public static int speed = 100; // ms per loop
-    public static int numPoints = 10;
-    public static int radius = 200;
+    
+    public static boolean randomMode = false;
+    public static boolean nnMode = true;
+    public static boolean saMode = false;
+    
+    
+    
+    
 
     public static void createAndShowGUI() {
         final JFrame f = new JFrame("Travelling Salesman Problem");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(PlotPanel.frameWidth, PlotPanel.frameHeight);
 
-        final PlotPanel pp = new PlotPanel(); // random
-//        final PlotPanel pp = new PlotPanel(numPoints); // rectangle
+//        final PlotPanel pp = new PlotPanel(); // random
+        final PlotPanel pp = new PlotPanel(numPoints); // rectangle
 //        final PlotPanel pp = new PlotPanel(numPoints * 1.0); // circle
         
         f.add(pp);
