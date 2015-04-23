@@ -25,10 +25,11 @@ public class Prog2 {
         final JFrame f = new JFrame("Travelling Salesman Problem");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(PlotPanel.frameWidth, PlotPanel.frameHeight);
-        f.setBounds(640, 0, width, height);
-        final PlotPanel pp = new PlotPanel(); // random
+        f.setBounds(640, 0, frameWidth, frameHeight);
+
+//        final PlotPanel pp = new PlotPanel(); // random
 //        final PlotPanel pp = new PlotPanel(numPoints); // rectangle
-//        final PlotPanel pp = new PlotPanel(numPoints * 1.0); // circle
+        final PlotPanel pp = new PlotPanel(numPoints * 1.0); // circle
 
         f.add(pp);
         f.setVisible(true);
