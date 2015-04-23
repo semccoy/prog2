@@ -3,6 +3,7 @@ package prog2;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import static java.lang.Math.exp;
 import java.util.*;
 import java.util.Random;
 import java.util.List;
@@ -146,6 +147,9 @@ class PlotPanel extends JPanel {
             }
 
             double temperature = r.nextDouble();
+//            // can also use this to make the probability of making a bad choice
+//            // related to the badness of the choice
+//            double prob = exp((travelDist2 - travelDist) / temperature);
 
             // if new path is better, replace old path with new path
             if (travelDist2 < travelDist) {
@@ -153,14 +157,13 @@ class PlotPanel extends JPanel {
                     points[i] = arl.get(i);
                 }
                 // or if the new path is worse but temperature if lower
-            } else if (temperature < 0.05) {
+            } else if (temperature < 0.02) {
                 System.out.println("Poor change made: " + travelDist2 + " replaced " + travelDist);
                 travelDist = travelDist2;
                 for (int i = 0; i < arl.size(); i++) {
                     points[i] = arl.get(i);
                 }
             }
-            // uncomment shufflerandom earlier?
         }
 
         // assess that path length - if it was the shortest ever, save those points

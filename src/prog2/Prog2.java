@@ -31,7 +31,6 @@ public class Prog2 {
 //        final PlotPanel pp = new PlotPanel(numPoints * 1.0); // circle
 
         f.add(pp);
-
         f.setVisible(true);
 
         int delay = speed;
